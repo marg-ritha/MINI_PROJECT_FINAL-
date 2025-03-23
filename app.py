@@ -15,6 +15,7 @@ import logging
 from werkzeug.utils import secure_filename
 import re
 from config.config import Config
+from mysql.connector import pooling
 
 app = Flask(__name__, static_folder='static')
 app.config.from_object(Config)
@@ -371,7 +372,7 @@ def login():
             query = "SELECT password, student_type, status FROM students WHERE register_number = %s"
         else:
             return render_template("login.html", error="Invalid registration number format!!", role=role)
-
+        db.ping(reconnect=True)
         cursor.execute(query, (register_number,))
         result = cursor.fetchone()
 
