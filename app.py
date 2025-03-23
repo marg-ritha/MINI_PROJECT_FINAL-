@@ -246,6 +246,7 @@ def verify_qr_code():
         
         cursor.execute("SELECT photo_filename FROM photo_info WHERE register_number = %s", (register_number,))
         photo_result = cursor.fetchone()
+        print("Photo Result:", photo_result)
 
         if photo_result and photo_result[0]:  # Ensure there is a valid filename
             photo_url = url_for('static', filename=f'uploads/{photo_result[0]}')  # Assuming photos are stored in /static/uploads
