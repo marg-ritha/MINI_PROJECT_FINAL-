@@ -26,7 +26,8 @@ db = mysql.connector.connect(
     user=Config.DB_USER,
     password=Config.DB_PASSWORD,
     database=Config.DB_NAME,
-    port=Config.DB_PORT
+    port=Config.DB_PORT,
+    ssl_disabled=True
 )
 cursor = db.cursor()
 
