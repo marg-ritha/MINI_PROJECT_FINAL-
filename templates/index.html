@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSET VIRTUAL BUS PASS</title>
+    <link rel="stylesheet" href="/static/ind.css" >
+    <script src="/static/js/index.js" defer></script>
+</head>
+<body>
+    <!-- Navbar -->
+<div class="navbar">
+    <ul>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        <li><a href="{{ url_for('rules') }}">Rules</a></li>
+        <li><a href="{{ url_for('services') }}">Services</a></li>
+    </ul>
+</div>
+
+    <div class="header-container">
+        <h1>SSET VIRTUAL BUS PASS</h1>
+    </div>
+    <p class="tagline">Experience seamless bus booking with our Virtual Buss Pass Website!</p>
+
+
+    <div class="button-wrapper">
+        <button id="adminButton" class="button">ADMIN</button>
+        <a href="{{ url_for('login') }}">
+            <button class="button">STUDENT</button>
+        </a>
+        <button id="securityButton" class="button">SECURITY</button>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

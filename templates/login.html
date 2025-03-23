@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Buss Pass System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='log.css') }}">
+</head>
+<body>
+    <!-- Navbar OUTSIDE the wrapper -->
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+    <!-- Wrapper only for centering the form -->
+    <div class="wrapper">
+        <div class="container">
+            <h1>
+                <span class="blue-text">WELCOME TO</span> 
+                <br>
+                <span class="orange-text">Virtual Bus Pass Generator</span>
+            </h1>
+            <div class="form-container">
+                <form action="{{ url_for('login', role=role) }}" method="POST">
+                    <div class="form-group">
+                        <br><br>
+                        <label for="register_number">Admission Number</label>
+                        <input type="text" name="register_number" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn-login">Login</button>
+                </form>
+
+                {% if role != "admin" %}
+                <br>
+                    <a href="{{ url_for('newuser') }}" class="register-link">New user? Register here.</a>
+                <br>
+                {% endif %}
+
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer OUTSIDE the wrapper -->
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.
+    </div>
+</body>
+</html>

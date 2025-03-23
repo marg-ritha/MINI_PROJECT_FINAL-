@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Advance Payment</title>
+    <link rel="stylesheet" href="/static/day.css">
+    <script src="/static/js/dayscholar.js" defer></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+    </div>
+</div>
+
+<!-- Form Section -->
+<div class="wrapper">
+    <div class="container">
+        <h1>Bus Advance Payment</h1>
+        <form action="/proceed_to_payment_dayscholar" method="post" onsubmit="return validateForm(event)">
+            <div class="form-group">
+                <label for="destinationSelect">Select Destination:</label>
+                <select id="destinationSelect" name="destination" required></select>
+            </div>
+
+            <div class="form-group">
+                <label for="dropOffSelect">Select Drop-Off Location:</label>
+                <select id="dropOffSelect" name="drop_off_location" required></select>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Select Duration:</label>
+                <select id="duration" name="duration" required>
+                    <option value="" disabled selected>-- Select Duration --</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-login">Proceed to Payment</button>
+        </form>
+        {% if error %}
+    <p class="error-message">{{ error }}</p>
+{% endif %}
+
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    &copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.
+</div>
+
+</body>
+</html>

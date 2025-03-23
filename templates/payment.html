@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="/static/pay.css">
+    <script defer src="/static/js/payment.js"></script> <!-- External JS -->
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <!-- Payment Details -->
+    <div class="contain">
+        <h2>Payment Details</h2>
+        <br>
+        <p><strong>Name:</strong> {{ session.get("full_name", "Not Available") }}</p>
+        <br>
+        <p><strong>Email:</strong> {{ session.get("email", "Not Available") }}</p>
+        <br>
+        <p><strong>Student Type:</strong> {{ session.get("student_type", "Not Available") }}</p>
+        <br>
+        <p><strong>Bus Name:</strong> {{ session.get("bus_name", "Not Available") }}</p>
+        <br>
+
+        {% if session.get("student_type") == "Hosteller" %}
+        <p><strong>Reach Date:</strong> {{ session.get("reach_date", "Not Available") }}</p>
+        {% else %}
+        <p><strong>Drop-Off Location:</strong> {{ session.get("drop_off", "Not Available") }}</p>
+        {% endif %}
+        <br>
+
+        <p><strong>Total Amount:</strong> ₹{{ session.get("total_amount", "Not Available") }}</p>
+        <br>
+
+        <!-- Pay Button -->
+        <button id="payBtn">Pay</button>
+
+        <!-- Success Message -->
+        <p id="paymentMsg" style="display: none; color: green; font-weight: bold;">Payment Successful!</p>
+
+        <!-- QR Code Display (Initially Hidden) -->
+        <div id="qrContainer" style="display: none;">
+            <p><strong>Bus Pass QR Code:</strong></p>
+            <img id="qrImage" 
+                 src="data:image/png;base64,{{ qr_code if qr_code else '' }}" 
+                 alt="Bus Pass QR Code" 
+                 style="width: 200px; height: 200px; margin-top: 15px;">
+        </div>
+        
+        <!-- Print Receipt Button -->
+        <button id="receiptBtn" class="no-print" style="display: none;">Print Receipt</button>
+
+        <br><br>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal">
+        <p><strong>Payment Successful!</strong></p>
+        <button id="closeModalBtn">OK</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering and Technology. All Rights Reserved.
+    </div>
+</body>
+</html>

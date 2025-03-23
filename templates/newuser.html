@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New User Registration</title>
+    <link rel="stylesheet" href="/static/news.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>New User Registration</h2>
+        <form id="registration" action="/register" method="POST" enctype="multipart/form-data">
+        <label for="full_name"><h4>Full Name</h4></label>
+        <input  type="text" name="fullname" required>
+        <label for="register_number"><h4>Admission Number</h4></label>
+        <input type="text" name="regno" required>
+        <label for="email"><h4>E-mail</h4></label>
+        <input type="email" name="email" required>
+        <label for="type"><h4>Student Type</h4></label>
+        <select id="sttype" name="sttype" required>
+            <option value="Day Scholar">Day Scholar</option>
+            <option value="Hosteller">Hosteller</option>
+        </select>
+        <label for="password"><h4>Password</h4></label>
+        <input type="password" name="password" required>
+        <label for="confirm-password"><h4>Confirm Password</h4></label>
+        <input type="password" name="confirm_password" required>
+        <label for="photo"><h4>Upload Photo (JPEG, Max 3MB)</h4></label>
+        <input type="file" name="photo" accept=".jpg,.jpeg" required>
+        <button type="submit" class="btn-login"><h4>Register</h4></button>
+        </form>
+        <a href="/" class="register-link"><h5>Already have an account? Login</h5></a>
+        {% if error %}
+            <h5 style="color: rgb(77, 16, 16); text-align: center; margin-top: 10px;">{{ error }}</h5>
+        {% endif %}
+    </div>
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering and Technology. All Rights Reserved.
+    </div>
+</body>
+</html>

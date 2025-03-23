@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hosteller Bus Booking</title>
+    <link rel="stylesheet" href="/static/host.css" />
+    <script src="/static/js/hosteller.js" defer></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Hosteller Bus Booking</h1>
+        <form id="busSelectionForm" action="/proceed_to_payment_hosteller" method="POST" onsubmit="return handleProceedToPayment()">
+            <label for="reach_date">Expected Arrival Date:</label>
+            <input type="date" id="reach_date" name="reach_date" required />
+            <div class="table-container">
+                <table id="busTable">
+                    <thead>
+                        <tr>
+                            <th>Bus ID</th>
+                            <th>Destination</th>
+                            <th>Total Seats</th>
+                            <th>Available Seats</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bus in buses %}
+                        <tr id="row-{{ bus[0] }}">
+                            <td>{{ bus[0] }}</td>
+                            <td>{{ bus[1] }}</td>
+                            <td>{{ bus[2] }}</td>
+                            <td class="available-seats">{{ bus[3] }}</td>
+                            <td>
+                                <input type="radio" name="selected_bus" value="{{ bus[0] }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" id="proceedBtn">Proceed to Payment</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.
+    </div>
+</body>
+</html>

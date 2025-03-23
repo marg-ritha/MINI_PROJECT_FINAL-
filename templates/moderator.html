@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderator Dashboard</title>
+    <link rel="stylesheet" href="/static/mod.css">
+    <script src="/static/js/moderator.js" defer></script>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<div class="navbar">
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+    </div>
+</div>
+
+<!-- ✅ Main Content Container -->
+<div class="container">
+    <h1>
+        <span class="blue-text">WELCOME</span> 
+        <br>
+        <span class="orange-text">Moderator</span>
+    </h1>
+
+    <!-- ✅ Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ✅ Action Dropdown -->
+    <label for="actionSelect"><h3>Select Action:</h3></label>
+    <select id="actionSelect" onchange="showActionForm()">
+        <option value="">-- Choose an Action --</option>
+        <option value="enable_disable">Enable/Disable Student Account</option>
+        <option value="view">View Student Information</option>
+    </select>
+
+    <br>
+
+    <!-- ✅ Enable/Disable Student Account Form -->
+    <div id="enableDisableForm" style="display: none;">
+        <h3>Enable/Disable Student Account<br><br></h3>
+        <form action="{{ url_for('update_student_status') }}" method="POST">
+            <label>Student Register Number:</label>
+            <input type="text" name="register_number" required>
+            <br>
+            <label>Action:</label>
+            <select name="status" required>
+                <option value="Enable">Enable</option>
+                <option value="Disable">Disable</option>
+            </select>
+            <br>
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+
+    <br>
+
+    <!-- ✅ View Student Information Form -->
+    <div id="viewStudentForm" style="display: none;">
+        <h3>View Student Information<br><br></h3>
+        <form action="{{ url_for('view_student') }}" method="POST">
+            <label>Student Register Number:</label>
+            <input type="text" name="register_number" required>
+            <br>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <br>
+
+    <!-- ✅ Display Student Information -->
+    <div id="studentInfo" {% if not student %}style="display: none;"{% endif %}>
+        <h3>Student Details</h3>
+        <table>
+            <tr><th>Register Number</th><td>{{ student[0] }}</td></tr>
+            <tr><th>Full Name</th><td>{{ student[1] }}</td></tr>
+            <tr><th>Email</th><td>{{ student[2] }}</td></tr>
+            <tr><th>Status</th><td>{{ student[3] }}</td></tr>
+        </table>
+    </div>
+
+    <br>
+</div> <!-- ✅ Closes Main Container -->
+
+<!-- ✅ Footer (Moved Outside the Container) -->
+<div class="footer">
+    <div class="footer-container">
+        &copy; 2025 Virtual Bus Pass System. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

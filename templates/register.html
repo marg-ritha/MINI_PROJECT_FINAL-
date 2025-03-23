@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='reg.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <div class="contain">
+    <h1>Registration Successful!</h1>
+    <p>You have successfully registered.</p>
+    <a href="/"><h3>Go to Login Page</h3></a>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.
+    </div>
+</body>
+</html>

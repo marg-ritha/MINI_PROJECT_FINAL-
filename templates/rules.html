@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Pass Rules</title>
+    <link rel="stylesheet" href="/static/rul.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logout-container">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="wrapper">
+        <div class="container">
+            <h1>
+                <span class="blue-text">Bus Pass</span> 
+                <span class="orange-text">Rules & Regulations</span>
+            </h1>
+            <h2>1. Eligibility & Application</h2>
+            <p>Bus passes are issued for Hostellers and Day Scholars:</p>
+            <ul>
+                <li>Hostellers bus passes can be scanned only once on their intended reach date provided during booking.</li>
+                <li>Day Scholars bus passes are issued on a 3-month or 6-month basis, depending on their advance payment.</li>
+                <li>During the valid period, the pass can be scanned any number of times for verification.</li>
+            </ul>
+
+            <h2>2. Bus Pass Usage</h2>
+            <ul>
+                <li>The bus pass is non-transferable. Lending it to others is strictly prohibited.</li>
+                <li>Day Scholars must carry a valid bus pass daily, while Hostellers must carry it only on their intended reach date.</li>
+            </ul>
+
+            <h2>3. QR Code Verification</h2>
+            <ul>
+                <li>Security personnel will scan the QR code when students exit the bus at the college stop.</li>
+                <li>The system will check the validity of the pass and its expiry date.</li>
+                <li>If a pass is found invalid or expired, the student will either have to pay a ₹300 fine to the office or face account suspension, depending on the severity of the case.</li>
+            </ul>
+
+            <h2>4. General Conduct</h2>
+            <ul>
+                <li>Students must behave respectfully with the driver, staff, and fellow passengers.</li>
+                <li>Misconduct, including harassment, vandalism, or violence, will result in strict disciplinary action.</li>
+                <li>Day Scholars must enter from their designated stop and get off at their designated drop-off location.</li>
+                <li>All students must exit the bus only at the college stop in the morning.</li>
+            </ul>
+
+            <h2>5. Emergency & Contact</h2>
+            <p>For any issues related to the bus pass, contact the Moderator.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 SCMS School of Engineering & Technology. All Rights Reserved.
+    </div>
+
+</body>
+</html>
