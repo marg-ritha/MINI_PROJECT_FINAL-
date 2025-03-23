@@ -486,8 +486,10 @@ def moderator():
 def superadmin():
     if "user" not in session or "admin_role" not in session:
         return redirect(url_for("login"))
+    db.commit()
     cursor.execute("SELECT admin_id, full_name, email, role FROM admins")
     admins = cursor.fetchall()
+    print("Fetched Admins:", admins)
     return render_template("superadmin.html", admins=admins)
 @app.route('/add_moderator', methods=['POST'])
 def add_moderator():
