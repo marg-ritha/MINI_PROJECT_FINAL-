@@ -308,6 +308,7 @@ def is_valid_register_number(register_no):
 @app.route('/newuser', methods=['GET'])
 def newuser():
     return render_template("newuser.html")
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 @app.route('/register',methods=['POST'])
 def register():
         print("Received:", request.form)
