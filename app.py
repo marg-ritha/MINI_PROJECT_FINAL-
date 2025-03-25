@@ -27,7 +27,8 @@ db = mysql.connector.connect(
     password=Config.DB_PASSWORD,
     database=Config.DB_NAME,
     port=Config.DB_PORT,
-    ssl_disabled=True
+    ssl_disabled=True,
+    auto_Commit=True
 )
 cursor = db.cursor()
 
@@ -431,7 +432,6 @@ def proceed_to_payment_dayscholar():
     if existing_pass:
          return render_template("dayscholar.html", error="You already have an active bus pass! Wait until expiry before making another payment.")
 
-    
     cursor.execute("SELECT full_name, email FROM students WHERE register_number = %s", (register_number,))
     student = cursor.fetchone()
 
@@ -440,7 +440,6 @@ def proceed_to_payment_dayscholar():
         return redirect(url_for("dayscholar"))
 
     full_name, email = student
-
     selected_destination = request.form.get("destination")
     selected_drop_off_index = request.form.get("drop_off_location")
     selected_duration = request.form.get("duration")
