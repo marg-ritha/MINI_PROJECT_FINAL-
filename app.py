@@ -28,10 +28,12 @@ db = mysql.connector.connect(
     database=Config.DB_NAME,
     port=Config.DB_PORT,
     ssl_disabled=True,
-    auto_Commit=True
 )
+db.autocommit=True
 cursor = db.cursor()
-
+def ensure_connection():
+    if not db.is_connected():
+        db.reconnect(attempts=3, delay=5)
 # Admin details from config
 admin_id = Config.ADMIN_ID
 full_name = Config.ADMIN_NAME
@@ -81,12 +83,14 @@ email = "principal@gmail.com"
 password = "principal" 
 role = "Super Admin"'''
 hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+ensure_connection()
 cursor.execute("SELECT admin_id FROM admins WHERE admin_id = %s", (admin_id,))
 existing_admin = cursor.fetchone()
 if not existing_admin:
     query = "INSERT INTO admins (admin_id, full_name, email, password, role) VALUES (%s, %s, %s, %s, %s)"
     values = (admin_id, full_name, email, hashed_password, role)
     try:
+        ensure_connection()
         cursor.execute(query, values)
         db.commit()
         print("Super Admin added successfully!")
@@ -128,7 +132,7 @@ def generate_bus_pass():
         else:  # Hosteller
             reach_date = session.get("reach_date")
             expiry_date = datetime.datetime.strptime(reach_date, "%Y-%m-%d").date() if reach_date else issue_date
-        
+        ensure_connection()
         new_cursor = db.cursor()
         new_cursor.execute("""
             INSERT INTO bus_passes (register_number, pass_type, issue_date, expiry_date)
@@ -160,7 +164,7 @@ def generate_bus_pass():
 def payment():
     if "user" not in session:
         return redirect(url_for("login"))
-    
+    ensure_connection()
     cursor.execute("""
         SELECT pass_id,register_number, pass_type, issue_date, expiry_date 
         FROM bus_passes WHERE pass_id = %s
@@ -212,7 +216,7 @@ def verify_qr_code():
             return jsonify({"message": "Incomplete QR Code data!", "status": "error"}), 400
         
         current_date = date.today()
-
+        ensure_connection()
         if pass_type == "Hosteller":
             cursor.execute("""
             SELECT COUNT(*)
@@ -244,7 +248,8 @@ def verify_qr_code():
         else:
             message = "Invalid or Expired QR Code!"
             status = "error"
-        
+
+        ensure_connection()
         cursor.execute("SELECT photo_filename FROM photo_info WHERE register_number = %s", (register_number,))
         photo_result = cursor.fetchone()
         print("Photo Result:", photo_result)
@@ -267,6 +272,7 @@ def insert_photo_info(register_number, photo_filename):
     values = (register_number, photo_filename)
 
     try:
+        ensure_connection()
         cursor.execute(query, values)
         db.commit()
         return "Photo info stored successfully"
@@ -288,6 +294,7 @@ def insert_user(register_number, full_name, email, password,student_type):
     values = (register_number, full_name, email, hashed_password,student_type)
     
     try:
+        ensure_connection()
         cursor.execute(query, values)
         db.commit()
         return f"User registered in {table} table"
@@ -329,6 +336,7 @@ def register():
 
         if len(photo.read()) > app.config["MAX_FILE_SIZE"]:
             return render_template("newuser.html", error="File size must be less than 3MB!")
+        ensure_connection()
         cursor.execute("SELECT * FROM students WHERE register_number = %s OR email = %s", (register_no, email))
         existing_user = cursor.fetchone()
         if existing_user:
@@ -376,6 +384,7 @@ def login():
         else:
             return render_template("login.html", error="Invalid registration number format!!", role=role)
         db.ping(reconnect=True)
+        ensure_connection()
         cursor.execute(query, (register_number,))
         result = cursor.fetchone()
 
@@ -421,6 +430,7 @@ def proceed_to_payment_dayscholar():
         return redirect(url_for("login"))
 
     register_number = session["user"]
+    ensure_connection()
     cursor.execute("""
         SELECT expiry_date 
         FROM bus_passes 
@@ -431,7 +441,7 @@ def proceed_to_payment_dayscholar():
     cursor.fetchall()
     if existing_pass:
          return render_template("dayscholar.html", error="You already have an active bus pass! Wait until expiry before making another payment.")
-
+    ensure_connection()
     cursor.execute("SELECT full_name, email FROM students WHERE register_number = %s", (register_number,))
     student = cursor.fetchone()
 
@@ -447,7 +457,7 @@ def proceed_to_payment_dayscholar():
     if not selected_destination or not selected_drop_off_index or not selected_duration:
         flash("Please select all required options.", "error")
         return redirect(url_for("dayscholar"))
-
+    ensure_connection()
     cursor.execute("SELECT drop_off_locations, fare_per_day FROM bus_info WHERE bus_destination = %s", (selected_destination,))
     fare_info = cursor.fetchone()
 
@@ -488,6 +498,7 @@ def superadmin():
     if "user" not in session or "admin_role" not in session:
         return redirect(url_for("login"))
     db.commit()
+    ensure_connection()
     cursor.execute("SELECT admin_id, full_name, email, role FROM admins")
     admins = cursor.fetchall()
     print("Fetched Admins:", admins)
@@ -504,6 +515,7 @@ def add_moderator():
 
     try:
         query = "INSERT INTO admins (admin_id, full_name, email, password, role) VALUES (%s, %s, %s, %s, 'Moderator')"
+        ensure_connection()
         cursor.execute(query, (admin_id, full_name, email, hashed_password))
         db.commit()
         flash("Moderator added successfully!", "success")
@@ -518,12 +530,14 @@ def delete_moderator():
     admin_id = request.form.get("admin_id")
 
     try:
+        ensure_connection()
         cursor.execute("SELECT * FROM admins WHERE admin_id = %s AND role = 'Moderator'", (admin_id,))
         moderator = cursor.fetchone()
 
         if not moderator:
             flash("Error: Moderator not found!", "error")
         else:
+            ensure_connection()
             cursor.execute("DELETE FROM admins WHERE admin_id = %s", (admin_id,))
             db.commit()
             flash("Moderator deleted successfully!", "success")
@@ -541,6 +555,7 @@ def view_student():
     register_number = request.form.get("register_number")
 
     try:
+        ensure_connection()
         cursor.execute("SELECT register_number, full_name, email, status FROM students WHERE register_number = %s", (register_number,))
         student = cursor.fetchone()
 
@@ -562,6 +577,7 @@ def update_student_status():
     status = request.form.get("status")
 
     try:
+        ensure_connection()
         cursor.execute("SELECT * FROM students WHERE register_number = %s", (register_number,))
         student = cursor.fetchone()
 
@@ -569,6 +585,7 @@ def update_student_status():
             flash("Error: Student not found!", "error")
         else:
             new_status = "Enabled" if status == "Enable" else "Disabled"
+            ensure_connection()
             cursor.execute("UPDATE students SET status = %s WHERE register_number = %s", (new_status, register_number))
             db.commit()
             flash(f"Student account {status}d successfully!", "success")
@@ -594,6 +611,7 @@ def dayscholar():
     if "user" not in session:
         return redirect(url_for("login"))
     try:
+        ensure_connection()
         cursor.execute("SELECT bus_destination, drop_off_locations, fare_per_day FROM bus_info")
         buses = cursor.fetchall()
         bus_data = {}
@@ -614,6 +632,7 @@ def get_bus_info():
     if "user" not in session:
         return jsonify({"error": "Unauthorized access"}), 401
     try:
+        ensure_connection()
         cursor.execute("SELECT bus_destination, drop_off_locations, fare_per_day FROM bus_info")
         buses = cursor.fetchall()
         bus_data = {}
@@ -644,6 +663,7 @@ def proceed_to_payment_hosteller():
         return jsonify({"error": "Please enter your expected arrival date."}), 400  
 
     try:
+        ensure_connection()
         # 🛑 Check available seats first
         cursor.execute("SELECT available_seats FROM bus_info WHERE bus_id = %s", (selected_bus_id,))
         result = cursor.fetchone()
@@ -653,7 +673,7 @@ def proceed_to_payment_hosteller():
 
         if available_seats <= 0:
             return jsonify({"error": "No available seats left"}), 409
-
+        ensure_connection()
         # Update available seats atomically
         cursor.execute("""
             UPDATE bus_info 
@@ -664,16 +684,17 @@ def proceed_to_payment_hosteller():
 
         if cursor.rowcount == 0:
             return jsonify({"error": "No available seats left"}), 409
-
+        ensure_connection()
         # Retrieve updated seat count
         cursor.execute("SELECT available_seats FROM bus_info WHERE bus_id = %s", (selected_bus_id,))
         updated_seats = cursor.fetchone()[0]
-
+        ensure_connection()
         cursor.execute("SELECT bus_destination FROM bus_info WHERE bus_id = %s", (selected_bus_id,))
         bus_info = cursor.fetchone()
         bus_name = bus_info[0] if bus_info else "Unknown"
 
         # Fetch student details
+        ensure_connection()
         register_number = session["user"]
         cursor.execute("SELECT full_name, email, student_type FROM students WHERE register_number = %s", (register_number,))
         student = cursor.fetchone()
@@ -709,6 +730,7 @@ def hosteller():
     if "user" not in session:
         return redirect(url_for("login"))
     try:
+        ensure_connection()
         cursor.execute("SELECT bus_id, bus_destination, total_seats, available_seats FROM bus_info")
         buses = cursor.fetchall()
     except mysql.connector.Error as e:
